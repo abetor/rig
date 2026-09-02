@@ -1,0 +1,30 @@
+[project]
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["python", "ai-agents", "agent-orchestration", "developer-tools", "git-worktree", "code-review", "workflow-automation"]
+name = "rig"
+version = "0.0.1"
+description = "A generic orchestration engine for coding agents and data-defined workflows"
+requires-python = ">=3.10"
+
+# The engine has no required third-party dependencies. Textual is optional and is used only by
+# the full-screen `rig --view` interface; the command falls back to a REPL when it is unavailable.
+# Install it with `pip3 install textual` or `pip3 install -e .[view]`.
+[project.optional-dependencies]
+view = ["textual"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[project.urls]
+Repository = "https://github.com/abetor/rig"
+Documentation = "https://github.com/abetor/rig#readme"
+Issues = "https://github.com/abetor/rig/issues"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["rig*"]

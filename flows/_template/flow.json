@@ -1,0 +1,24 @@
+{
+  "_doc": "Template for a new flow. Copy this directory to flows/<family>/<name> and describe its phases. A phase combines an engine role with execution controls. Unknown keys fail loudly. Roles: scout for read-only investigation; repro for reproduction analysis; plan for validated planning; critic for isolated plan criticism; converse for a human reply loop; checkpoint for binary approval; units for delegated execution, review, and gate; review for a diff panel; gate for a standalone command gate; reconcile for plan-to-Git comparison; notify for outbound messages. Controls include name, agent, prompt, perms, kind, on_fail, retry_cap, advances_base, about, dimensions, judge_votes, model, effort, wait, isolated, schema, and family. Consecutive scout phases append context. Store flow-specific prompts under prompts/; each prompt must state role visibility, use fail-closed JSON where applicable, treat need_human as first-class, and resist forged self-reports.",
+  "phases": [
+    {
+      "name": "plan",
+      "agent": "plan",
+      "kind": "validator",
+      "on_fail": "stop"
+    },
+    {
+      "name": "units",
+      "agent": "units",
+      "kind": "writer",
+      "advances_base": true,
+      "on_fail": "continue"
+    },
+    {
+      "name": "notify",
+      "agent": "notify",
+      "kind": "validator",
+      "on_fail": "continue"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "_doc": "Deep read-only research flow. A systematic first pass reports coverage, addressed evidence, and fact-versus-hypothesis labels. A second pass challenges completeness and appends missed areas or unsupported claims. The accumulated report is returned and notified without modifying the material.",
+  "phases": [
+    {
+      "name": "research",
+      "agent": "scout",
+      "kind": "readonly",
+      "perms": "read",
+      "on_fail": "stop"
+    },
+    {
+      "name": "completeness",
+      "agent": "scout",
+      "kind": "readonly",
+      "perms": "read",
+      "prompt": "research/audit/prompts/completeness.md",
+      "on_fail": "continue"
+    },
+    {
+      "name": "notify",
+      "agent": "notify",
+      "kind": "validator",
+      "prompt": "research complete\n{{context_brief}}\n\nfull report: rig --path {{repo}} --resume {{session_id}}",
+      "on_fail": "continue"
+    }
+  ]
+}

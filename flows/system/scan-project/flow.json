@@ -1,0 +1,12 @@
+{
+  "_doc": "Read-only warm-up flow. One scout builds a baseline project profile for cold-start memory. It never mutates the project or delegates writers.",
+  "phases": [
+    {
+      "name": "scout",
+      "agent": "scout",
+      "kind": "readonly",
+      "perms": "read",
+      "on_fail": "continue"
+    }
+  ]
+}

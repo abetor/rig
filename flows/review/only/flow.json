@@ -1,0 +1,20 @@
+{
+  "_doc": "Read-only review of an existing diff. An isolated judge panel evaluates either ctx.diff or the tracked working-tree diff against HEAD. Untracked files require staging first to appear. No command gate runs because this flow reviews an artifact rather than accepting execution; the verdict and fix items are returned and notified.",
+  "phases": [
+    {
+      "name": "review",
+      "agent": "review",
+      "kind": "validator",
+      "isolated": true,
+      "perms": "read",
+      "on_fail": "continue"
+    },
+    {
+      "name": "notify",
+      "agent": "notify",
+      "kind": "validator",
+      "prompt": "review complete\n{{fix_items}}\n\nfull verdict: rig --path {{repo}} --resume {{session_id}}",
+      "on_fail": "continue"
+    }
+  ]
+}

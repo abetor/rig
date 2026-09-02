@@ -1,0 +1,30 @@
+{
+  "_doc": "Minimal autonomous feature flow. Planning is followed by delegated units with isolated review and a deterministic gate. Green units alone advance the integration base, after which the flow reconciles planned units against Git and sends a notification. It uses the shared prompts.",
+  "phases": [
+    {
+      "name": "plan",
+      "agent": "plan",
+      "kind": "validator",
+      "on_fail": "stop"
+    },
+    {
+      "name": "units",
+      "agent": "units",
+      "kind": "writer",
+      "advances_base": true,
+      "on_fail": "continue"
+    },
+    {
+      "name": "reconcile",
+      "agent": "reconcile",
+      "kind": "validator",
+      "on_fail": "continue"
+    },
+    {
+      "name": "notify",
+      "agent": "notify",
+      "kind": "validator",
+      "on_fail": "continue"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "_doc": "Default lead-orchestrator flow. The orchestrator agent owns triage and delegates real work through guarded flows. A final mechanical notification uses the configured channel and otherwise skips cleanly. Both phases continue on failure so a weak lead result can still be reported and notification failure does not erase session state.",
+  "phases": [
+    {
+      "name": "orchestrator",
+      "agent": "orchestrator",
+      "kind": "writer",
+      "perms": "default",
+      "on_fail": "continue"
+    },
+    {
+      "name": "notify",
+      "agent": "notify",
+      "kind": "validator",
+      "on_fail": "continue"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "_doc": "Autonomous fix for a small bug. Read-only reproduction establishes the mechanism and failing oracle. Planning creates exactly one unit that writes a regression test first and then fixes it to green. The unit is delegated, reviewed, and gated before notification. A failed reproduction stops and requests a human decision.",
+  "phases": [
+    {
+      "name": "repro",
+      "agent": "repro",
+      "kind": "readonly",
+      "perms": "read",
+      "on_fail": "stop"
+    },
+    {
+      "name": "plan",
+      "agent": "plan",
+      "kind": "validator",
+      "on_fail": "stop"
+    },
+    {
+      "name": "units",
+      "agent": "units",
+      "kind": "writer",
+      "advances_base": true,
+      "on_fail": "continue"
+    },
+    {
+      "name": "notify",
+      "agent": "notify",
+      "kind": "validator",
+      "on_fail": "continue"
+    }
+  ]
+}

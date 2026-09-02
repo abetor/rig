@@ -1,0 +1,58 @@
+{
+  "_doc": "Data-defined developer-feature flow. Scouting, planning, and advisory criticism happen before a human approval checkpoint. After approval, units execute with review-and-fix retries and deterministic gates, then reconcile against Git and notify. Notification steps are mechanical and become no-ops without a configured channel.",
+  "phases": [
+    {
+      "name": "scout",
+      "agent": "scout",
+      "kind": "readonly",
+      "perms": "read",
+      "on_fail": "continue"
+    },
+    {
+      "name": "plan",
+      "agent": "plan",
+      "kind": "validator",
+      "on_fail": "stop"
+    },
+    {
+      "name": "critic",
+      "agent": "critic",
+      "kind": "validator",
+      "isolated": true,
+      "on_fail": "continue"
+    },
+    {
+      "name": "notify-plan",
+      "agent": "notify",
+      "kind": "validator",
+      "action": "approve",
+      "prompt": "plan ready - approval required\n{{plan}}",
+      "on_fail": "continue"
+    },
+    {
+      "name": "checkpoint",
+      "agent": "checkpoint",
+      "kind": "validator",
+      "on_fail": "stop"
+    },
+    {
+      "name": "units",
+      "agent": "units",
+      "kind": "writer",
+      "advances_base": true,
+      "on_fail": "continue"
+    },
+    {
+      "name": "reconcile",
+      "agent": "reconcile",
+      "kind": "validator",
+      "on_fail": "continue"
+    },
+    {
+      "name": "notify-done",
+      "agent": "notify",
+      "kind": "validator",
+      "on_fail": "continue"
+    }
+  ]
+}

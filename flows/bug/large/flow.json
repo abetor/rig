@@ -1,0 +1,57 @@
+{
+  "_doc": "Coordinated fix for a multi-part bug. Read-only reproduction establishes the mechanism and pre-fix oracle. Planning puts the regression test and first fix in one red-to-green unit, then adds bounded units for the remaining mechanism. A human reply loop approves the plan. Unit review adds a refutation dimension to correctness and security, then Git state is reconciled and completion is notified.",
+  "phases": [
+    {
+      "name": "repro",
+      "agent": "repro",
+      "kind": "readonly",
+      "perms": "read",
+      "on_fail": "stop"
+    },
+    {
+      "name": "plan",
+      "agent": "plan",
+      "kind": "validator",
+      "on_fail": "stop"
+    },
+    {
+      "name": "notify-plan",
+      "agent": "notify",
+      "kind": "validator",
+      "action": "reply",
+      "prompt": "plan fix ready\n{{plan}}",
+      "on_fail": "continue"
+    },
+    {
+      "name": "converse",
+      "agent": "converse",
+      "kind": "validator",
+      "about": "plan",
+      "on_fail": "stop"
+    },
+    {
+      "name": "units",
+      "agent": "units",
+      "kind": "writer",
+      "advances_base": true,
+      "dimensions": [
+        "correctness",
+        "security",
+        "refutation"
+      ],
+      "on_fail": "continue"
+    },
+    {
+      "name": "reconcile",
+      "agent": "reconcile",
+      "kind": "validator",
+      "on_fail": "continue"
+    },
+    {
+      "name": "notify-done",
+      "agent": "notify",
+      "kind": "validator",
+      "on_fail": "continue"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "_doc": "Autonomous test backfill. Scouting maps the suite and ranks untested behavior by risk. Planning creates units containing observable input-output behavior, edge cases, code addresses, and local test conventions. Units add behavior tests without modifying production code, then run the repository gate, reconcile Git state, and notify.",
+  "phases": [
+    {
+      "name": "scout",
+      "agent": "scout",
+      "kind": "readonly",
+      "perms": "read",
+      "on_fail": "continue"
+    },
+    {
+      "name": "plan",
+      "agent": "plan",
+      "kind": "validator",
+      "on_fail": "stop"
+    },
+    {
+      "name": "units",
+      "agent": "units",
+      "kind": "writer",
+      "advances_base": true,
+      "on_fail": "continue"
+    },
+    {
+      "name": "reconcile",
+      "agent": "reconcile",
+      "kind": "validator",
+      "on_fail": "continue"
+    },
+    {
+      "name": "notify",
+      "agent": "notify",
+      "kind": "validator",
+      "on_fail": "continue"
+    }
+  ]
+}

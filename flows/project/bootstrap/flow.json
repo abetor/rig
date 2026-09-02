@@ -1,0 +1,52 @@
+{
+  "_doc": "New-project bootstrap flow. Discovery identifies evidence and open choices, then planning proposes the smallest runnable skeleton and an acceptance command. A human reply loop approves both. Because no trusted gate exists initially, the human must pin argv in <repository>/.rig/gate.json; rig never writes this trust decision, and units remain red without it.",
+  "phases": [
+    {
+      "name": "discovery",
+      "agent": "scout",
+      "kind": "readonly",
+      "perms": "read",
+      "on_fail": "continue"
+    },
+    {
+      "name": "plan",
+      "agent": "plan",
+      "kind": "validator",
+      "on_fail": "stop"
+    },
+    {
+      "name": "notify-plan",
+      "agent": "notify",
+      "kind": "validator",
+      "action": "reply",
+      "prompt": "skeleton plan ready\n{{plan}}\n\nBefore execution, pin the trusted gate in .rig/gate.json as a JSON argv array. Units cannot turn green without it.",
+      "on_fail": "continue"
+    },
+    {
+      "name": "converse",
+      "agent": "converse",
+      "kind": "validator",
+      "about": "plan",
+      "on_fail": "stop"
+    },
+    {
+      "name": "units",
+      "agent": "units",
+      "kind": "writer",
+      "advances_base": true,
+      "on_fail": "continue"
+    },
+    {
+      "name": "reconcile",
+      "agent": "reconcile",
+      "kind": "validator",
+      "on_fail": "continue"
+    },
+    {
+      "name": "notify-done",
+      "agent": "notify",
+      "kind": "validator",
+      "on_fail": "continue"
+    }
+  ]
+}

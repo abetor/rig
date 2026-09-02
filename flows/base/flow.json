@@ -1,0 +1,30 @@
+{
+  "_doc": "Compatibility alias of feature/small. It runs plan, units, reconciliation, and notification without a human checkpoint. The phase list intentionally stays identical to feature/small. resolve_phases() without an explicit name still resolves base, while the user-facing CLI default is lead/orchestrate.",
+  "phases": [
+    {
+      "name": "plan",
+      "agent": "plan",
+      "kind": "validator",
+      "on_fail": "stop"
+    },
+    {
+      "name": "units",
+      "agent": "units",
+      "kind": "writer",
+      "advances_base": true,
+      "on_fail": "continue"
+    },
+    {
+      "name": "reconcile",
+      "agent": "reconcile",
+      "kind": "validator",
+      "on_fail": "continue"
+    },
+    {
+      "name": "notify",
+      "agent": "notify",
+      "kind": "validator",
+      "on_fail": "continue"
+    }
+  ]
+}
