@@ -1,0 +1,31 @@
+name: Tests
+
+"on":
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install
+        run: |
+          python3 -m pip install -e .
+          python3 -m pip install 'pytest>=8'
+      - name: Test
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider
