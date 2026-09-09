@@ -1,10 +1,12 @@
 # rig
 
+[![Tests](https://github.com/abetor/rig/actions/workflows/tests.yml/badge.svg)](https://github.com/abetor/rig/actions/workflows/tests.yml)
+
 `rig` is a local orchestration engine for coding agents. It turns a task into isolated worktree
 units, asks independent reviewers to inspect the real staged diff, runs deterministic gates, and
 leaves verified branches for a human to merge.
 
-[Quick start](#quick-start) | [Offline demo](#demo) | [Architecture](DESIGN.md) | [Tests](#tests) | [Contributing and agent guide](AGENTS.md) | [MIT license](LICENSE)
+[Try it offline](#try-it-offline-first) | [Quick start](#quick-start) | [Architecture](DESIGN.md) | [Tests](#tests) | [Contributing and agent guide](AGENTS.md) | [MIT license](LICENSE)
 
 ## Problem
 
@@ -12,6 +14,26 @@ An agent saying that a change is complete is not evidence that the change is cor
 runs also need durable state: a process can die, a reviewer can be unavailable, or one unit can fail
 after earlier units have passed. `rig` keeps these concerns explicit and makes the repository and
 gate results the source of truth.
+
+## Try it offline first
+
+The acceptance test drives the real Git worktree, staged-diff review, judge, gate, stacking, and
+recovery path with scripted agents. It needs Python 3.10 or newer, Git, and package-index access
+for the install step; the test itself makes no network calls and needs no model credentials.
+
+```bash
+git clone https://github.com/abetor/rig.git
+cd rig
+python3 -m venv .venv
+. .venv/bin/activate
+python3 -m pip install -e . 'pytest>=8'
+PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider tests/test_rig_acceptance.py
+```
+
+Expected tail: `3 passed` in a few seconds (measured 2026-09-09 on macOS with Python 3.13:
+`3 passed in 2.87s`). Scripted agents prove the mechanics of isolation, review, gating, and
+recovery; they say nothing about the quality of a real model's output. That is what the live
+quick start below is for.
 
 ## What rig does
 
@@ -83,20 +105,6 @@ python3 -m pip install -e '.[view]'
 python3 -m rig --path . --view
 ```
 
-## Demo
-
-The offline acceptance test exercises the real Git worktree, staged-diff, judge, gate, stacking,
-and recovery path with scripted agents, so it needs no model credentials or network access.
-Install the test runner first with `python3 -m pip install 'pytest>=8'`:
-
-```bash
-PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider \
-  tests/test_rig_acceptance.py
-```
-
-Opt-in live scenarios are in `smoke/live.py`. They invoke real agent CLIs and may consume paid model
-quota. Run `python3 smoke/live.py --help` before choosing a scenario.
-
 ## Limitations
 
 - Local transport is defense in depth, not a machine-security boundary. Run untrusted repositories
@@ -110,7 +118,6 @@ quota. Run `python3 smoke/live.py --help` before choosing a scenario.
   backstop when a provider does not report cost.
 - Cross-family review is configured by adapter choice; it is not automatically enforced.
 - Live smoke tests require external agent CLIs, credentials, and quota and are not part of pytest.
-- The public source and tests intentionally contain no Russian-language fixtures.
 
 ## Data and credential boundary
 
@@ -135,6 +142,14 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider
 
 The suite uses fake adapters for unit tests and real temporary Git repositories for acceptance
 coverage. It does not require network access, model credentials, or paid inference.
+
+Opt-in live scenarios are in `smoke/live.py`. They invoke real agent CLIs and may consume paid model
+quota. Run `python3 smoke/live.py --help` before choosing a scenario.
+
+## Provenance
+
+This repository began as a public source snapshot of a personal tool. Earlier local development
+history is not included.
 
 ## License
 
